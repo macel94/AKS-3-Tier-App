@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32519.379
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AKS.Three.Tier.App.SPA", "AKS.3.Tier.App.SPA\AKS.Three.Tier.App.SPA.csproj", "{949B93BC-E858-48D5-9248-FC3426A81FF6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AKS.Three.Tier.App.API", "AKS.3.Tier.App.API\AKS.Three.Tier.App.API.csproj", "{7106ABBF-FCBD-471E-8751-DB40D27D21A5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{949B93BC-E858-48D5-9248-FC3426A81FF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{949B93BC-E858-48D5-9248-FC3426A81FF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{949B93BC-E858-48D5-9248-FC3426A81FF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{949B93BC-E858-48D5-9248-FC3426A81FF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7106ABBF-FCBD-471E-8751-DB40D27D21A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7106ABBF-FCBD-471E-8751-DB40D27D21A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7106ABBF-FCBD-471E-8751-DB40D27D21A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7106ABBF-FCBD-471E-8751-DB40D27D21A5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {27BD6482-BA74-4781-9135-6F46BC00DDB5}
+	EndGlobalSection
+EndGlobal
