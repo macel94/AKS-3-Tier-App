@@ -18,5 +18,14 @@ services:
     build:
       context: .
       dockerfile: AKS.Three.Tier.App.API/Dockerfile
+    environment:
+      - REDIS_CONNECTIONSTRING=redis
     ports:
       - "5101:80"
+    depends_on:
+      - redis
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
