@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   frontend-server:
-    image: ${DOCKER_REGISTRY-}frontend.server
+    image: ${REGISTRY-local/aks-three-tier-app}/frontend.server:${PLATFORM:-linux}-${TAG:-latest}
     build:
       context: .
       dockerfile: AKS.Three.Tier.App.Frontend/Server/Dockerfile
@@ -14,7 +14,7 @@ services:
       - api
 
   api:
-    image: ${DOCKER_REGISTRY-}api
+    image: ${REGISTRY-local/aks-three-tier-app}/api:${PLATFORM:-linux}-${TAG:-latest}
     build:
       context: .
       dockerfile: AKS.Three.Tier.App.API/Dockerfile
