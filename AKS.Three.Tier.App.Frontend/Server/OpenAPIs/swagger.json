@@ -94,6 +94,28 @@
           "containerized": {
             "type": "string",
             "nullable": true
+          },
+          "dbEntities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DbEntity"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DbEntity": {
+        "type": "object",
+        "properties": {
+          "hostName": {
+            "type": "string",
+            "nullable": true
+          },
+          "creationDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
         },
         "additionalProperties": false

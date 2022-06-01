@@ -9,6 +9,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var cs = builder.Configuration["REDIS_CONNECTIONSTRING"];
 builder.Services.AddSingleton(sp =>
 {
     return ConnectionMultiplexer.Connect(builder.Configuration["REDIS_CONNECTIONSTRING"]);

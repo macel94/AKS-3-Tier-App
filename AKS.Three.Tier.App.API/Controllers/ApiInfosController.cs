@@ -24,42 +24,34 @@ namespace AKS.Three.Tier.App.API.Controllers
         {
             APIEnvironmentInfosDTO environmentInfosDTO = new();
             await environmentInfosDTO.GetIpInfosAsync();
-            await UpdateDbEntityAsync(environmentInfosDTO);
+            var currentResults = await GetUpdatedDbEntitiesAsync(environmentInfosDTO);
+            environmentInfosDTO.DbEntities = currentResults;
             return environmentInfosDTO;
         }
 
-        public async Task<DbEntity> GetDbEntityAsync(string Id)
+        private async Task<List<DbEntity?>?> GetUpdatedDbEntitiesAsync(APIEnvironmentInfosDTO currentInfos)
         {
-            var data = await _database.StringGetAsync(Id);
+            var random = new Random();
 
-            if (data.IsNullOrEmpty)
+            await Task.Delay(random.Next(10, 300));
+            var newEntity = new DbEntity()
+            {
+                HostName = currentInfos.HostName,
+                CreationDate = DateTimeOffset.UtcNow
+            };
+
+            var totalItemsAfterPush = await _database.ListLeftPushAsync("list-of-entities", JsonSerializer.Serialize(newEntity));
+            if (totalItemsAfterPush <= 0)
             {
                 return null;
             }
-
-            return JsonSerializer.Deserialize<DbEntity>(data, new JsonSerializerOptions
+            if (totalItemsAfterPush > 10)
             {
-                PropertyNameCaseInsensitive = true
-            });
-        }
-
-        public async Task<DbEntity> UpdateDbEntityAsync(DbEntity DbEntity)
-        {
-            // Scriviamo in una chiave condivisa, una lista di cose in cui andiamo ad aggiungere
-            // O se possibile andiamo non sulla stessa chiave ma solo su un qualcosa di comune con cui riprendere tutti i valori che poi ordineremo
-            // Collection dove l'id dell'oggetto è l'hostname e il valore è l'oggetto DbEntity
-            // Random wait da 100 a 300 ms, La popoliamo, riprendiamo tutti quelli della collection, e li ritorniamo in ordine
-            var created = await _database.StringSetAsync(DbEntity.BuyerId, JsonSerializer.Serialize(DbEntity));
-
-            if (!created)
-            {
-                _logger.LogInformation("Problem occur persisting the item.");
-                return null;
+                await _database.ListRightPopAsync("list-of-entities");
             }
+            var currentSet = await _database.ListRangeAsync("list-of-entities", 0, 9);
 
-            _logger.LogInformation("DbEntity item persisted succesfully.");
-
-            return await GetDbEntityAsync(DbEntity.BuyerId);
+            return currentSet.Select(x => JsonSerializer.Deserialize<DbEntity>(x)).ToList();
         }
 
         private IServer GetServer()

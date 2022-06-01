@@ -48,8 +48,18 @@ namespace AKS.Three.Tier.App.API.Controllers
                 OsDescription = obj.OsDescription,
                 ProcessorCount = obj.ProcessorCount,
                 TotalAvailableMemory = obj.TotalAvailableMemory,
-                Usage = obj.Usage
+                Usage = obj.Usage,
+                DbEntities = Map(obj.DbEntities)
             };
+        }
+
+        private ICollection<ClientDbEntity> Map(ICollection<DbEntity> dbEntities)
+        {
+            return dbEntities.Select(x => new ClientDbEntity()
+            {
+                HostName = x.HostName,
+                CreationDate = x.CreationDate
+            }).ToList();
         }
     }
 }

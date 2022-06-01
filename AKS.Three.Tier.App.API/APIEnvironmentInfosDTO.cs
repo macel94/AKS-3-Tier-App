@@ -20,7 +20,8 @@ namespace AKS.Three.Tier.App.API
         public string OSArchitecture { get; set; } = RuntimeInformation.OSArchitecture.ToString();
         public string ProcessorCount { get; set; } = Environment.ProcessorCount.ToString();
         public string Containerized { get; set; } = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") is null ? "false" : "true";
-        public List<DbEntity>? DbEntities { get; set; }
+        public List<DbEntity?>? DbEntities { get; set; }
+
         public APIEnvironmentInfosDTO()
         {
             HostName = Dns.GetHostName();
