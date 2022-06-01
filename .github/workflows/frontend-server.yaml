@@ -20,7 +20,7 @@ on:
 env:
   SERVICE: frontend-server
   IMAGE: frontend.server
-  REGISTRY_ENDPOINT: ghcr.io/${{ github.repository_owner }}/wisdompetmedicine
+  REGISTRY_ENDPOINT: ghcr.io/${{ github.repository_owner }}/aks-three-tier-app
   REGISTRY_HOST: ghcr.io
 
 jobs:

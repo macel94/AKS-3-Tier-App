@@ -1,0 +1,155 @@
+#Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: user-ingress
+  namespace: { { .Values.Namespace } }
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: three-tier-app-front-sv
+                port:
+                  number: 80
+---
+#Redis as DB
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-db
+  namespace: { { .Values.Namespace } }
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-db
+  template:
+    metadata:
+      labels:
+        app: redis-db
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+        - name: redis-db
+          image: mcr.microsoft.com/oss/bitnami/redis:latest
+          env:
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "yes"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          ports:
+            - containerPort: 6379
+              name: redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-db-sv
+spec:
+  ports:
+    - port: 6379
+  selector:
+    app: redis-db
+---
+#Frontend
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: three-tier-app-front
+  namespace: { { .Values.Namespace } }
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: three-tier-app-front
+  template:
+    metadata:
+      labels:
+        app: three-tier-app-front
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+        - name: three-tier-app-front
+          image: ghcr.io/macel94/aks-three-tier-app/frontend.server:master
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          ports:
+            - containerPort: 80
+          env:
+            - name: API_URL
+              value: "http://three-tier-app-api-sv"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: three-tier-app-front-sv
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+  selector:
+    app: three-tier-app-front
+---
+#Api
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: three-tier-app-api
+  namespace: { { .Values.Namespace } }
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: three-tier-app-api
+  template:
+    metadata:
+      labels:
+        app: three-tier-app-api
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+        - name: three-tier-app-api
+          image: ghcr.io/macel94/aks-three-tier-app/api:master
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          ports:
+            - containerPort: 80
+          env:
+            - name: REDIS_CONNECTIONSTRING
+              value: "redis-db-sv"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: three-tier-app-api-sv
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+  selector:
+    app: three-tier-app-api
