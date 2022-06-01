@@ -1,0 +1,152 @@
+﻿@page "/"
+@using System.Runtime.InteropServices
+@using System.Net
+@using AKS.Three.Tier.App.Frontend.Shared
+@using static System.Net.WebRequestMethods
+@inject HttpClient Http
+
+<PageTitle>Home</PageTitle>
+
+<div class="text-center">
+    <h1>Welcome to .NET</h1>
+</div>
+
+<div class="text-center">
+    <h2>FE Infos</h2>
+</div>
+@if (feInfos != null && beInfos != null)
+{
+    <div align="center">
+        <table class="table table-striped table-hover">
+            <tr>
+                <td>.NET version</td>
+                <td>@feInfos.FrameworkDescription</td>
+            </tr>
+            <tr>
+                <td>Operating system</td>
+                <td>@feInfos.OSDescription</td>
+            </tr>
+            <tr>
+                <td>Processor architecture</td>
+                <td>@feInfos.OSArchitecture</td>
+            </tr>
+            <tr>
+                <td>CPU cores</td>
+                <td>@feInfos.ProcessorCount</td>
+            </tr>
+            <tr>
+                <td>Containerized</td>
+                <td>@feInfos.Containerized</td>
+            </tr>
+            <tr>
+                <td>Memory, total available GC memory</td>
+                <td>@feInfos.TotalAvailableMemory</td>
+            </tr>
+            @if (feInfos.Cgroup)
+            {
+                <tr>
+                    <td>cgroup memory usage</td>
+                    <td>@feInfos.MemoryUsage</td>
+                </tr>
+                <tr>
+                    <td>cgroup memory limit</td>
+                    <td>@feInfos.MemoryLimit</td>
+                </tr>
+            }
+            <tr>
+                <td>Host name</td>
+                <td>@feInfos.HostName</td>
+            </tr>
+            <tr>
+                <td style="vertical-align: top">Server IP address</td>
+                <td>
+                    @{
+                        foreach (var ip in feInfos.IpList)
+                        {
+                            @ip
+                            <br />
+                        }
+                    }
+
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="text-center">
+        <h2>BE Infos</h2>
+    </div>
+
+    <div align="center">
+        <table class="table table-striped table-hover">
+            <tr>
+                <td>.NET version</td>
+                <td>@beInfos.FrameworkDescription</td>
+            </tr>
+            <tr>
+                <td>Operating system</td>
+                <td>@beInfos.OsDescription</td>
+            </tr>
+            <tr>
+                <td>Processor architecture</td>
+                <td>@beInfos.OsArchitecture</td>
+            </tr>
+            <tr>
+                <td>CPU cores</td>
+                <td>@beInfos.ProcessorCount</td>
+            </tr>
+            <tr>
+                <td>Containerized</td>
+                <td>@beInfos.Containerized</td>
+            </tr>
+            <tr>
+                <td>Memory, total available GC memory</td>
+                <td>@beInfos.TotalAvailableMemory</td>
+            </tr>
+            @if (beInfos.Cgroup)
+            {
+                <tr>
+                    <td>cgroup memory usage</td>
+                    <td>@beInfos.MemoryUsage</td>
+                </tr>
+                <tr>
+                    <td>cgroup memory limit</td>
+                    <td>@beInfos.MemoryLimit</td>
+                </tr>
+            }
+            <tr>
+                <td>Host name</td>
+                <td>@beInfos.HostName</td>
+            </tr>
+            <tr>
+                <td style="vertical-align: top">Server IP address</td>
+                <td>
+                    @{
+                        foreach (var ip in beInfos.IpList)
+                        {
+                            @ip
+                            <br />
+                        }
+                    }
+                </td>
+            </tr>
+        </table>
+    </div>
+}
+
+<div class="text-center">
+    <h2>Databse Infos</h2>
+</div>
+
+@code {
+    FrontendEnvironmentInfosDTO? feInfos;
+    APIEnvInfosDTO? beInfos;
+
+    protected async override Task OnInitializedAsync()
+    {
+        var result = await Http.GetFromJsonAsync<CompleteRequestInfosDTO>("Infos");
+        feInfos = result?.FrontendInfos;
+        beInfos = result?.ApiInfos;
+        await base.OnInitializedAsync();
+    }
+}

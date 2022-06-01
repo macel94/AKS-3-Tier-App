@@ -1,0 +1,103 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "AKS.Three.Tier.App.API",
+    "version": "1.0"
+  },
+  "paths": {
+    "/ApiInfos": {
+      "get": {
+        "tags": [
+          "ApiInfos"
+        ],
+        "operationId": "GetEnvironmentInfos",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIEnvironmentInfosDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIEnvironmentInfosDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIEnvironmentInfosDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "APIEnvironmentInfosDTO": {
+        "type": "object",
+        "properties": {
+          "totalAvailableMemory": {
+            "type": "string",
+            "nullable": true
+          },
+          "memoryUsage": {
+            "type": "string",
+            "nullable": true
+          },
+          "memoryLimit": {
+            "type": "string",
+            "nullable": true
+          },
+          "cgroup": {
+            "type": "boolean"
+          },
+          "usage": {
+            "type": "string",
+            "nullable": true
+          },
+          "limit": {
+            "type": "string",
+            "nullable": true
+          },
+          "hostName": {
+            "type": "string",
+            "nullable": true
+          },
+          "ipList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "frameworkDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "osDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "osArchitecture": {
+            "type": "string",
+            "nullable": true
+          },
+          "processorCount": {
+            "type": "string",
+            "nullable": true
+          },
+          "containerized": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

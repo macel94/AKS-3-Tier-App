@@ -4,19 +4,19 @@ namespace AKS.Three.Tier.App.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class InfosController : ControllerBase
+    public class ApiInfosController : ControllerBase
     {
-        private readonly ILogger<InfosController> _logger;
+        private readonly ILogger<ApiInfosController> _logger;
 
-        public InfosController(ILogger<InfosController> logger)
+        public ApiInfosController(ILogger<ApiInfosController> logger)
         {
             _logger = logger;
         }
 
         [HttpGet(Name = "GetEnvironmentInfos")]
-        public async Task<EnvironmentInfosDTO> Get()
+        public async Task<APIEnvironmentInfosDTO> Get()
         {
-            EnvironmentInfosDTO environmentInfosDTO = new EnvironmentInfosDTO();
+            APIEnvironmentInfosDTO environmentInfosDTO = new();
             await environmentInfosDTO.GetIpInfosAsync();
             return environmentInfosDTO;
         }

@@ -1,4 +1,4 @@
-using AKS.Three.Tier.App.SPA;
+using AKS.Three.Tier.App.Frontend.Client;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 

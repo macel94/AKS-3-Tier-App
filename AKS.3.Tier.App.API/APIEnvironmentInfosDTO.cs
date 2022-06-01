@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace AKS.Three.Tier.App.API
 {
-    public class EnvironmentInfosDTO
+    public class APIEnvironmentInfosDTO
     {
         const long Mebi = 1024 * 1024;
         const long Gibi = Mebi * 1024;
@@ -15,8 +15,12 @@ namespace AKS.Three.Tier.App.API
         public string Limit { get; set; } = string.Empty;
         public string HostName { get; set; } = string.Empty;
         public IEnumerable<string> IpList { get; set; } = Array.Empty<string>();
-
-        public EnvironmentInfosDTO()
+        public string FrameworkDescription { get; set; } = RuntimeInformation.FrameworkDescription;
+        public string OSDescription { get; set; } = RuntimeInformation.OSDescription;
+        public string OSArchitecture { get; set; } = RuntimeInformation.OSArchitecture.ToString();
+        public string ProcessorCount { get; set; } = Environment.ProcessorCount.ToString();
+        public string Containerized { get; set; } = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") is null ? "false" : "true";
+        public APIEnvironmentInfosDTO()
         {
             HostName = Dns.GetHostName();
             GCMemoryInfo gcInfo = GC.GetGCMemoryInfo();
@@ -34,7 +38,8 @@ namespace AKS.Three.Tier.App.API
 
         public async Task GetIpInfosAsync()
         {
-            IpList = (await Dns.GetHostAddressesAsync(HostName)).Select(x => x.ToString());
+            IPAddress[] ips = (await Dns.GetHostAddressesAsync(HostName));
+            IpList = ips.Select(x => x.ToString());
         }
 
         string GetInBestUnit(long size)
