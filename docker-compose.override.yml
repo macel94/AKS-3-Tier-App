@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  aks.three.tier.app.frontend.server:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+
+  aks.three.tier.app.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+

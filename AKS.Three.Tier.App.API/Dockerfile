@@ -6,10 +6,10 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["AKS.3.Tier.App.API/AKS.Three.Tier.App.API.csproj", "AKS.3.Tier.App.API/"]
-RUN dotnet restore "AKS.3.Tier.App.API/AKS.Three.Tier.App.API.csproj"
+COPY ["AKS.Three.Tier.App.API/AKS.Three.Tier.App.API.csproj", "AKS.Three.Tier.App.API/"]
+RUN dotnet restore "AKS.Three.Tier.App.API/AKS.Three.Tier.App.API.csproj"
 COPY . .
-WORKDIR "/src/AKS.3.Tier.App.API"
+WORKDIR "/src/AKS.Three.Tier.App.API"
 RUN dotnet build "AKS.Three.Tier.App.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
