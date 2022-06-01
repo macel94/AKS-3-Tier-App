@@ -3,7 +3,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: user-ingress
-  namespace: { { .Values.Namespace } }
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
@@ -24,7 +23,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis-db
-  namespace: { { .Values.Namespace } }
 spec:
   replicas: 1
   selector:
@@ -39,7 +37,7 @@ spec:
         "kubernetes.io/os": linux
       containers:
         - name: redis-db
-          image: mcr.microsoft.com/oss/bitnami/redis:latest
+          image: redis:latest
           env:
             - name: ALLOW_EMPTY_PASSWORD
               value: "yes"
@@ -57,7 +55,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-db-sv
+  name: redis-db
 spec:
   ports:
     - port: 6379
@@ -69,7 +67,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: three-tier-app-front
-  namespace: { { .Values.Namespace } }
 spec:
   replicas: 1
   selector:
@@ -114,7 +111,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: three-tier-app-api
-  namespace: { { .Values.Namespace } }
 spec:
   replicas: 1
   selector:
@@ -141,7 +137,7 @@ spec:
             - containerPort: 80
           env:
             - name: REDIS_CONNECTIONSTRING
-              value: "redis-db-sv"
+              value: "redis-db"
 ---
 apiVersion: v1
 kind: Service
