@@ -1,15 +1,10 @@
 version: '3.8'
 
 services:
-  aks.three.tier.app.frontend.server:
+  frontend-server:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - API_URL=http://aks.three.tier.app.api
-    ports:
-      - "5100:80"
 
-  aks.three.tier.app.api:
+  api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-      - "5101:80"

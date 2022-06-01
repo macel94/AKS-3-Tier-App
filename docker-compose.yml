@@ -1,20 +1,20 @@
 version: '3.8'
 
 services:
-  aks.three.tier.app.frontend.server:
-    image: ${DOCKER_REGISTRY-}aksthreetierappfrontendserver
+  frontend-server:
+    image: ${DOCKER_REGISTRY-}frontend.server
     build:
       context: .
       dockerfile: AKS.Three.Tier.App.Frontend/Server/Dockerfile
     environment:
-      - API_URL=http://aks.three.tier.app.api
+      - API_URL=http://api
     ports:
       - "5100:80"
     depends_on:
-      - aks.three.tier.app.api
+      - api
 
-  aks.three.tier.app.api:
-    image: ${DOCKER_REGISTRY-}aksthreetierappapi
+  api:
+    image: ${DOCKER_REGISTRY-}api
     build:
       context: .
       dockerfile: AKS.Three.Tier.App.API/Dockerfile
