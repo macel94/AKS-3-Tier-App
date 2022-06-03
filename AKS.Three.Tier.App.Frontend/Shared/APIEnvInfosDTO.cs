@@ -43,6 +43,6 @@ namespace AKS.Three.Tier.App.Frontend.Shared
         [JsonProperty("containerized", Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
         public string? Containerized { get; set; }
         [Newtonsoft.Json.JsonProperty("dbEntities", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<ClientDbEntity> DbEntities { get; set; }
+        public System.Collections.Generic.ICollection<ClientDbEntity>? DbEntities { get; set; }
     }
 }

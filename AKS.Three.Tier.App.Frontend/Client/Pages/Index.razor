@@ -137,21 +137,24 @@
         <h2>Database Infos: Latest 10 hosts that connected to db</h2>
     </div>
 
-    <div align="center">
-        <table class="table table-striped table-hover">
-            @foreach (var entity in beInfos.DbEntities.OrderByDescending(x => x.CreationDate))
-            {
-                <tr>
-                    <td>HostName</td>
-                    <td>@entity.HostName</td>
-                </tr>
-                <tr>
-                    <td>UTC Date</td>
-                    <td>@entity.CreationDate</td>
-                </tr>
-            }
-        </table>
-    </div>
+    @if (beInfos.DbEntities != null)
+    {
+        <div align="center">
+            <table class="table table-striped table-hover">
+                @foreach (var entity in beInfos.DbEntities.OrderByDescending(x => x.CreationDate))
+                {
+                    <tr>
+                        <td>HostName</td>
+                        <td>@entity.HostName</td>
+                    </tr>
+                    <tr>
+                        <td>UTC Date</td>
+                        <td>@entity.CreationDate</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    }
 }
 
 @code {
