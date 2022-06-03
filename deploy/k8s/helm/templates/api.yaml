@@ -1,0 +1,45 @@
+#Api
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: three-tier-app-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: three-tier-app-api
+  template:
+    metadata:
+      labels:
+        app: three-tier-app-api
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+        - name: three-tier-app-api
+          image: ghcr.io/macel94/aks-three-tier-app/api:master
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          ports:
+            - containerPort: 80
+          env:
+            - name: REDIS_CONNECTIONSTRING
+              value: "redis-db-sv"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: three-tier-app-api-sv
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+  selector:
+    app: three-tier-app-api
+---
+
