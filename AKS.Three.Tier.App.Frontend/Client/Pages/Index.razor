@@ -143,14 +143,20 @@
             <table class="table table-striped table-hover">
                 @foreach (var entity in beInfos.DbEntities.OrderByDescending(x => x.CreationDate))
                 {
-                    <tr>
-                        <td>HostName</td>
-                        <td>@entity.HostName</td>
-                    </tr>
-                    <tr>
-                        <td>UTC Date</td>
-                        <td>@entity.CreationDate</td>
-                    </tr>
+                    @if (!string.IsNullOrWhiteSpace(entity.HostName))
+                    {
+                        <tr>
+                            <td>HostName</td>
+                            <td>@entity.HostName</td>
+                        </tr>
+                    }
+                    @if (entity.CreationDate.HasValue)
+                    {
+                        <tr>
+                            <td>UTC Date</td>
+                            <td>@entity.CreationDate.Value.ToString("O")</td>
+                        </tr>
+                    }
                 }
             </table>
         </div>
