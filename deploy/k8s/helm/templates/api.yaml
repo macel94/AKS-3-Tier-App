@@ -17,7 +17,7 @@ spec:
         "kubernetes.io/os": linux
       containers:
         - name: three-tier-app-api
-          image: ghcr.io/macel94/aks-three-tier-app/api:master
+          image: ghcr.io/agiccloud/aks-three-tier-app/api:master
           resources:
             requests:
               cpu: 100m
