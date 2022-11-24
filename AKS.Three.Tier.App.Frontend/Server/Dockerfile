@@ -1,10 +1,10 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:7.0-jammy AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0-jammy AS build
 WORKDIR /src
 COPY ["AKS.Three.Tier.App.Frontend/Server/AKS.Three.Tier.App.Frontend.Server.csproj", "AKS.Three.Tier.App.Frontend/Server/"]
 COPY ["AKS.Three.Tier.App.Frontend/Client/AKS.Three.Tier.App.Frontend.Client.csproj", "AKS.Three.Tier.App.Frontend/Client/"]
