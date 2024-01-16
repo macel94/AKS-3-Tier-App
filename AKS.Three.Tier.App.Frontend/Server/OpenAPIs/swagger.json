@@ -5,12 +5,11 @@
     "version": "1.0"
   },
   "paths": {
-    "/ApiInfos": {
+    "/api/Infos/GetEnvironmentInfos": {
       "get": {
         "tags": [
-          "ApiInfos"
+          "Infos"
         ],
-        "operationId": "GetEnvironmentInfos",
         "responses": {
           "200": {
             "description": "Success",

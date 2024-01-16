@@ -1,8 +1,7 @@
-﻿namespace AKS.Three.Tier.App.API
+﻿namespace AKS.Three.Tier.App.API;
+
+public class DbEntity
 {
-    public class DbEntity
-    {
-        public string? HostName { get; set; }
-        public DateTimeOffset? CreationDate { get; set; }
-    }
+    public string? HostName { get; set; }
+    public DateTimeOffset? CreationDate { get; set; }
 }
