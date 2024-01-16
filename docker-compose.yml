@@ -7,9 +7,10 @@ services:
       context: .
       dockerfile: AKS.Three.Tier.App.Frontend/Server/Dockerfile
     environment:
-      - API_URL=http://api
+      - API_URL=http://api:8080
+      - ASPNETCORE_HTTP_PORTS=8080
     ports:
-      - "5100:80"
+      - "5100:8080"
     depends_on:
       - api
 
@@ -20,8 +21,9 @@ services:
       dockerfile: AKS.Three.Tier.App.API/Dockerfile
     environment:
       - REDIS_CONNECTIONSTRING=redis
+      - ASPNETCORE_HTTP_PORTS=8080
     ports:
-      - "5101:80"
+      - "5101:8080"
     depends_on:
       - redis
 

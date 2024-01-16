@@ -1,10 +1,10 @@
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-builder.Services.AddScoped(sp => new ApiCustomNamespace.ApiClient(builder.Configuration["API_URL"],new HttpClient()));
+builder.Services.AddScoped(sp => new ApiCustomNamespace.ApiClient(builder.Configuration["API_URL"], new HttpClient()));
 
 var app = builder.Build();
 

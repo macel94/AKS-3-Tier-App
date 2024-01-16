@@ -1,65 +1,64 @@
 using System.Net;
 using System.Runtime.InteropServices;
 
-namespace AKS.Three.Tier.App.API
+namespace AKS.Three.Tier.App.API;
+
+public class APIEnvironmentInfosDTO
 {
-    public class APIEnvironmentInfosDTO
+    const long Mebi = 1024 * 1024;
+    const long Gibi = Mebi * 1024;
+    public string TotalAvailableMemory { get; set; } = string.Empty;
+    public string MemoryUsage { get; set; } = string.Empty;
+    public string MemoryLimit { get; set; } = string.Empty;
+    public bool Cgroup { get; set; }
+    public string Usage { get; set; } = string.Empty;
+    public string Limit { get; set; } = string.Empty;
+    public string HostName { get; set; } = string.Empty;
+    public IEnumerable<string> IpList { get; set; } = Array.Empty<string>();
+    public string FrameworkDescription { get; set; } = RuntimeInformation.FrameworkDescription;
+    public string OSDescription { get; set; } = RuntimeInformation.OSDescription;
+    public string OSArchitecture { get; set; } = RuntimeInformation.OSArchitecture.ToString();
+    public string ProcessorCount { get; set; } = Environment.ProcessorCount.ToString();
+    public string Containerized { get; set; } = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") is null ? "false" : "true";
+    public List<DbEntity?>? DbEntities { get; set; }
+
+    public APIEnvironmentInfosDTO()
     {
-        const long Mebi = 1024 * 1024;
-        const long Gibi = Mebi * 1024;
-        public string TotalAvailableMemory { get; set; } = string.Empty;
-        public string MemoryUsage { get; set; } = string.Empty;
-        public string MemoryLimit { get; set; } = string.Empty;
-        public bool Cgroup { get; set; }
-        public string Usage { get; set; } = string.Empty;
-        public string Limit { get; set; } = string.Empty;
-        public string HostName { get; set; } = string.Empty;
-        public IEnumerable<string> IpList { get; set; } = Array.Empty<string>();
-        public string FrameworkDescription { get; set; } = RuntimeInformation.FrameworkDescription;
-        public string OSDescription { get; set; } = RuntimeInformation.OSDescription;
-        public string OSArchitecture { get; set; } = RuntimeInformation.OSArchitecture.ToString();
-        public string ProcessorCount { get; set; } = Environment.ProcessorCount.ToString();
-        public string Containerized { get; set; } = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") is null ? "false" : "true";
-        public List<DbEntity?>? DbEntities { get; set; }
+        HostName = Dns.GetHostName();
+        GCMemoryInfo gcInfo = GC.GetGCMemoryInfo();
+        TotalAvailableMemory = GetInBestUnit(gcInfo.TotalAvailableMemoryBytes);
 
-        public APIEnvironmentInfosDTO()
+        Cgroup = RuntimeInformation.OSDescription.StartsWith("Linux") && Directory.Exists("/sys/fs/cgroup/memory");
+        if (Cgroup)
         {
-            HostName = Dns.GetHostName();
-            GCMemoryInfo gcInfo = GC.GetGCMemoryInfo();
-            TotalAvailableMemory = GetInBestUnit(gcInfo.TotalAvailableMemoryBytes);
-
-            Cgroup = RuntimeInformation.OSDescription.StartsWith("Linux") && Directory.Exists("/sys/fs/cgroup/memory");
-            if (Cgroup)
-            {
-                Usage = File.ReadAllLines("/sys/fs/cgroup/memory/memory.usage_in_bytes")[0];
-                Limit = File.ReadAllLines("/sys/fs/cgroup/memory/memory.limit_in_bytes")[0];
-                MemoryUsage = GetInBestUnit(long.Parse(Usage));
-                MemoryLimit = GetInBestUnit(long.Parse(Limit));
-            }
+            Usage = File.ReadAllLines("/sys/fs/cgroup/memory/memory.usage_in_bytes")[0];
+            Limit = File.ReadAllLines("/sys/fs/cgroup/memory/memory.limit_in_bytes")[0];
+            MemoryUsage = GetInBestUnit(long.Parse(Usage));
+            MemoryLimit = GetInBestUnit(long.Parse(Limit));
         }
+    }
 
-        public async Task GetIpInfosAsync()
+    public async Task GetIpInfosAsync()
+    {
+        IPAddress[] ips = (await Dns.GetHostAddressesAsync(HostName));
+        IpList = ips.Select(x => x.ToString());
+    }
+
+    string GetInBestUnit(long size)
+    {
+        if (size < Mebi)
         {
-            IPAddress[] ips = (await Dns.GetHostAddressesAsync(HostName));
-            IpList = ips.Select(x => x.ToString());
+            return $"{size} bytes";
         }
-
-        string GetInBestUnit(long size)
+        else if (size < Gibi)
         {
-            if (size < Mebi)
-            {
-                return $"{size} bytes";
-            }
-            else if (size < Gibi)
-            {
-                decimal mebibytes = Decimal.Divide(size, Mebi);
-                return $"{mebibytes:F} MiB";
-            }
-            else
-            {
-                decimal gibibytes = Decimal.Divide(size, Gibi);
-                return $"{gibibytes:F} GiB";
-            }
+            decimal mebibytes = Decimal.Divide(size, Mebi);
+            return $"{mebibytes:F} MiB";
+        }
+        else
+        {
+            decimal gibibytes = Decimal.Divide(size, Gibi);
+            return $"{gibibytes:F} GiB";
         }
     }
 }
