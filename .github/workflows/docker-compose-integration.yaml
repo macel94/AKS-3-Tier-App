@@ -1,0 +1,118 @@
+name: docker-compose-integration
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - AKS.Three.Tier.App.API/**
+      - AKS.Three.Tier.App.Frontend/**
+      - docker-compose.yml
+      - docker-compose.override.yml
+      - .github/workflows/docker-compose-integration.yaml
+  pull_request:
+    branches:
+      - master
+    paths:
+      - AKS.Three.Tier.App.API/**
+      - AKS.Three.Tier.App.Frontend/**
+      - docker-compose.yml
+      - docker-compose.override.yml
+      - .github/workflows/docker-compose-integration.yaml
+
+env:
+  REGISTRY: local/aks-three-tier-app
+  TAG: ci
+  PLATFORM: linux
+
+jobs:
+  compose-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build local images with docker-compose
+        run: |
+          if command -v docker-compose >/dev/null; then
+            sudo -E docker-compose build frontend-server api
+          else
+            sudo -E docker compose build frontend-server api
+          fi
+
+      - name: Start docker-compose stack
+        run: |
+          if command -v docker-compose >/dev/null; then
+            sudo -E docker-compose up -d redis api frontend-server
+          else
+            sudo -E docker compose up -d redis api frontend-server
+          fi
+
+      - name: Wait for frontend and backend
+        run: |
+          for i in {1..60}; do
+            if curl -fsS http://localhost:5101/api/infos/getenvironmentinfos >/dev/null \
+              && curl -fsS http://localhost:5100/Infos >/dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Services did not become ready in time"
+          exit 1
+
+      - name: Send high-volume requests
+        run: |
+          request() {
+            local url="$1"
+            for attempt in {1..10}; do
+              if curl -fsS "$url" >/dev/null; then
+                return 0
+              fi
+              sleep 2
+            done
+            return 1
+          }
+          export -f request
+
+          seq 1 200 | xargs -I{} -P4 bash -c \
+            'request http://localhost:5101/api/infos/getenvironmentinfos && request http://localhost:5100/Infos'
+
+      - name: Verify container logs
+        run: |
+          if command -v docker-compose >/dev/null; then
+            sudo -E docker-compose logs api > api.log
+            sudo -E docker-compose logs frontend-server > frontend.log
+            sudo -E docker-compose logs redis > redis.log
+          else
+            sudo -E docker compose logs api > api.log
+            sudo -E docker compose logs frontend-server > frontend.log
+            sudo -E docker compose logs redis > redis.log
+          fi
+
+          grep -q "Application started. Press Ctrl+C to shut down." api.log
+          grep -q "Application started. Press Ctrl+C to shut down." frontend.log
+          grep -q "Ready to accept connections" redis.log
+
+          if grep -Eiq "Unhandled exception|fail:|crit:" api.log frontend.log; then
+            echo "Detected error signatures in application logs"
+            exit 1
+          fi
+
+      - name: Print logs on failure
+        if: failure()
+        run: |
+          if command -v docker-compose >/dev/null; then
+            sudo -E docker-compose logs --no-color
+          else
+            sudo -E docker compose logs --no-color
+          fi
+
+      - name: Stop docker-compose stack
+        if: always()
+        run: |
+          if command -v docker-compose >/dev/null; then
+            sudo -E docker-compose down -v
+          else
+            sudo -E docker compose down -v
+          fi
