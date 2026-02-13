@@ -9,18 +9,38 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 1
+    groups:
+      nuget-dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: "docker" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 1
+    groups:
+      docker-dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: "docker" # See documentation for possible values
     directory: "/.devcontainer" # Location of package manifests
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 1
+    groups:
+      docker-dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: "github-actions" # See documentation for possible values
     directory: "/" # Location of package manifests --> https://docs.github.com/en/enterprise-server@3.4/code-security/dependabot/working-with-dependabot/keeping-your-actions-up-to-date-with-dependabot#enabling-dependabot-version-updates-for-actions
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 1
+    groups:
+      github-actions-dependencies:
+        patterns:
+          - "*"
