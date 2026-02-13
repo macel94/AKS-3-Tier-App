@@ -24,11 +24,14 @@ on:
 env:
   REGISTRY: local/aks-three-tier-app
   TAG: ci
-  PLATFORM: linux
+  REQUEST_COUNT: 200
+  PARALLEL_JOBS: 4
 
 jobs:
   compose-integration:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -51,7 +54,7 @@ jobs:
 
       - name: Wait for frontend and backend
         run: |
-          for i in {1..60}; do
+          for _ in {1..60}; do
             if curl -fsS http://localhost:5101/api/infos/getenvironmentinfos >/dev/null \
               && curl -fsS http://localhost:5100/Infos >/dev/null; then
               exit 0
@@ -75,8 +78,8 @@ jobs:
           }
           export -f request
 
-          seq 1 200 | xargs -I{} -P4 bash -c \
-            'request http://localhost:5101/api/infos/getenvironmentinfos && request http://localhost:5100/Infos'
+          seq 1 "$REQUEST_COUNT" | xargs -n1 -P"$PARALLEL_JOBS" bash -c \
+            'request http://localhost:5101/api/infos/getenvironmentinfos && request http://localhost:5100/Infos' _
 
       - name: Verify container logs
         run: |
