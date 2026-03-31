@@ -1,5 +1,5 @@
-# [Choice] .NET version: 6.0-bullseye-slim, 6.0-jammy, 6.0-focal
-ARG VARIANT="7.0-jammy"
+# [Choice] .NET version: 10.0, 9.0, 8.0
+ARG VARIANT="10.0"
 FROM mcr.microsoft.com/dotnet/sdk:${VARIANT}
 
 # [Optional] Uncomment this section to install additional OS packages.
