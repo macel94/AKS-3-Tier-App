@@ -4,19 +4,18 @@ A sample three-tier application built with .NET 8 and designed for deployment on
 
 ## Architecture
 
-```
-┌────────────────────────────────────────────┐
-│                    AKS                      │
-│                                            │
-│  ┌──────────┐    ┌──────────┐    ┌───────┐ │
-│  │ Frontend │───▶│   API    │───▶│ Redis │ │
-│  │ (Blazor) │    │(ASP.NET) │    │  (DB) │ │
-│  └──────────┘    └──────────┘    └───────┘ │
-│       ▲                                    │
-│  ┌────┴──────────────┐                     │
-│  │  NGINX Ingress    │                     │
-│  └───────────────────┘                     │
-└────────────────────────────────────────────┘
+```mermaid
+graph TD
+    User([User / Browser])
+
+    subgraph AKS[AKS Cluster]
+        Ingress[NGINX Ingress Controller]
+        Frontend["Frontend (Blazor WebAssembly)"]
+        API["API (ASP.NET Core)"]
+        Redis[(Redis)]
+    end
+
+    User --> Ingress --> Frontend --> API --> Redis
 ```
 
 | Tier     | Technology                          | Description                                              |
