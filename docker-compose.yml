@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   frontend-server:
     image: ${REGISTRY-local/aks-three-tier-app}/frontend.server:${PLATFORM:-linux}-${TAG:-latest}
