@@ -1,35 +1,34 @@
 # AKS-3-Tier-App
 
-A sample three-tier application built with .NET 8 and designed for deployment on [Azure Kubernetes Service (AKS)](https://learn.microsoft.com/en-us/azure/aks/). The app demonstrates how to run a Blazor WebAssembly frontend, an ASP.NET Core API, and a Redis data store together in Kubernetes using Helm.
+A sample three-tier application built with .NET 10 and designed for deployment on [Azure Kubernetes Service (AKS)](https://learn.microsoft.com/en-us/azure/aks/). The app demonstrates how to run a Blazor WebAssembly frontend, an ASP.NET Core API, and a Redis data store together in Kubernetes using Helm.
 
 ## Architecture
 
-```
-┌────────────────────────────────────────────┐
-│                    AKS                      │
-│                                            │
-│  ┌──────────┐    ┌──────────┐    ┌───────┐ │
-│  │ Frontend │───▶│   API    │───▶│ Redis │ │
-│  │ (Blazor) │    │(ASP.NET) │    │  (DB) │ │
-│  └──────────┘    └──────────┘    └───────┘ │
-│       ▲                                    │
-│  ┌────┴──────────────┐                     │
-│  │  NGINX Ingress    │                     │
-│  └───────────────────┘                     │
-└────────────────────────────────────────────┘
+```mermaid
+graph TD
+    User([User / Browser])
+
+    subgraph AKS[AKS Cluster]
+        Ingress[NGINX Ingress Controller]
+        Frontend["Frontend (Blazor WebAssembly)"]
+        API["API (ASP.NET Core)"]
+        Redis[(Redis)]
+    end
+
+    User --> Ingress --> Frontend --> API --> Redis
 ```
 
 | Tier     | Technology                          | Description                                              |
 |----------|-------------------------------------|----------------------------------------------------------|
 | Frontend | Blazor WebAssembly + ASP.NET Server | Displays environment info from both frontend and backend |
-| API      | ASP.NET Core 8 + Swagger            | Returns host/IP/memory info and persists entries to Redis |
+| API      | ASP.NET Core 10 + Swagger           | Returns host/IP/memory info and persists entries to Redis |
 | Database | Redis                               | Stores the last 10 API-caller host names as a list       |
 
 The home page shows live environment details (hostname, IP addresses, OS, .NET version, memory) from both the frontend server and the backend API, along with the most recent hosts that connected to the database.
 
 ## Tech Stack
 
-- **.NET 8** – Blazor WebAssembly (client), ASP.NET Core (server & API)
+- **.NET 10** – Blazor WebAssembly (client), ASP.NET Core (server & API)
 - **Redis** – in-memory data store for the data tier
 - **Docker / Docker Compose** – local development environment
 - **Kubernetes (AKS)** – production deployment target
@@ -39,7 +38,7 @@ The home page shows live environment details (hostname, IP addresses, OS, .NET v
 
 ## Prerequisites
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) (includes Docker Compose)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/) (for Kubernetes deployments)
 - [Helm 3](https://helm.sh/docs/intro/install/) (for Helm-based deployments)
@@ -135,7 +134,7 @@ Images are tagged with the branch name (e.g., `master`) and pushed to `ghcr.io`.
 
 ```
 AKS-3-Tier-App/
-├── AKS.Three.Tier.App.API/        # ASP.NET Core 8 REST API
+├── AKS.Three.Tier.App.API/        # ASP.NET Core 10 REST API
 │   ├── Controllers/               # API controllers (environment info + Redis)
 │   ├── Dockerfile
 │   └── Program.cs

@@ -4,8 +4,7 @@
       "dockerfile": "./Dockerfile",
       "context": ".",
       "args": {
-        // Use this for Razor support, until OmniSharp supports .NET 6 properly
-        "VARIANT": "7.0-jammy"
+        "VARIANT": "10.0"
       }
     },
   
