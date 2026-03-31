@@ -41,6 +41,6 @@ public class InfosController(ILogger<InfosController> logger, ConnectionMultiple
         }
         var currentSet = await _database.ListRangeAsync("list-of-entities", 0, 9);
 
-        return currentSet.Select(x => JsonSerializer.Deserialize<DbEntity>(x!)).ToList();
+        return currentSet.Select(x => JsonSerializer.Deserialize<DbEntity>((string)x!)).ToList();
     }
 }
