@@ -50,7 +50,7 @@ runs:
 
     - name: Compose build ${{ inputs.service }}
       shell: bash
-      run: sudo -E docker-compose build ${{ inputs.service }}
+      run: sudo -E docker compose build ${{ inputs.service }}
       working-directory: .
       env:
         TAG: ${{ env.BRANCH }}
@@ -58,7 +58,7 @@ runs:
 
     - name: Compose push ${{ inputs.service }}
       shell: bash
-      run: sudo -E docker-compose push ${{ inputs.service }}
+      run: sudo -E docker compose push ${{ inputs.service }}
       working-directory: .
       env:
         TAG: ${{ env.BRANCH }}
