@@ -33,7 +33,7 @@ jobs:
         run: |
           echo "REGISTRY_ENDPOINT_LC=${REGISTRY_ENDPOINT,,}" >>${GITHUB_ENV}
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - uses: ./.github/workflows/composite/build
         with:
           service: ${{ env.SERVICE }}
@@ -50,7 +50,7 @@ jobs:
         run: |
           echo "REGISTRY_ENDPOINT_LC=${REGISTRY_ENDPOINT,,}" >>${GITHUB_ENV}
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - uses: ./.github/workflows/composite/build-push
         with:
           service: ${{ env.SERVICE }}
